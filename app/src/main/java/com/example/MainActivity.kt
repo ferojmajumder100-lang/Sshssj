@@ -537,6 +537,7 @@ fun MainScreen() {
   var showCreatorDialog by remember { mutableStateOf(false) }
   var showHistoryDialog by remember { mutableStateOf(false) }
   var showCookieLoginDialog by remember { mutableStateOf(false) }
+  var showSetRangeDialog by remember { mutableStateOf(false) }
   var cookieLoginInput by remember { mutableStateOf("") }
   var rangesList by remember { mutableStateOf<List<String>>(emptyList()) }
   var selectedRange by remember { mutableStateOf("") }
@@ -589,23 +590,13 @@ fun MainScreen() {
 
   // Loop for fetching ranges - updates every 10 seconds automatically from startup
   LaunchedEffect(Unit) {
+/*
     isFetchingRanges = true
     while (true) {
-      fetchFacebookRanges(
-        onSuccess = { ranges ->
-          isFetchingRanges = false
-          // Use all ranges
-          rangesList = ranges
-          if (selectedRange.isEmpty() && ranges.isNotEmpty()) {
-            selectedRange = ranges.last() // Auto-select last range by default
-          }
-        },
-        onFailure = {
-          isFetchingRanges = false
-        }
-      )
+      // ... (code)
       kotlinx.coroutines.delay(10000)
     }
+*/
   }
 
   // Support system back press navigation inside WebView
@@ -842,6 +833,25 @@ fun MainScreen() {
                   overflow = TextOverflow.Ellipsis
                 )
               }
+            }
+            
+            // Set Range Button
+            Button(
+              onClick = { showSetRangeDialog = true },
+              colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+              ),
+              shape = RoundedCornerShape(8.dp),
+              modifier = Modifier
+                .weight(1f)
+            ) {
+              Text(
+                text = if (selectedRange.isEmpty()) "Set Range" else selectedRange,
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+              )
             }
 
             // OTP History Button
@@ -1166,95 +1176,11 @@ fun MainScreen() {
             .verticalScroll(rememberScrollState()),
           verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-          // Range selection section with manual Reload button
-          Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Text(
-              text = "লাইভ রেঞ্জ নির্বাচন করুন (৫ সেকেন্ড পর পর রিফ্রেশ):",
-              style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-              modifier = Modifier.weight(1f)
-            )
-            IconButton(
-              onClick = {
-                isFetchingRanges = true
-                fetchFacebookRanges(
-                  onSuccess = { ranges ->
-                    isFetchingRanges = false
-                    rangesList = ranges
-                    if (selectedRange.isEmpty() && ranges.isNotEmpty()) {
-                      selectedRange = ranges.last()
-                    }
-                  },
-                  onFailure = {
-                    isFetchingRanges = false
-                  }
-                )
-              },
-              modifier = Modifier.size(36.dp)
-            ) {
-              Icon(
-                imageVector = Icons.Default.Refresh,
-                contentDescription = "রিফ্রেশ রেঞ্জ",
-                modifier = Modifier.size(20.dp),
-                tint = MaterialTheme.colorScheme.primary
-              )
-            }
-          }
-
-          if (isFetchingRanges && rangesList.isEmpty()) {
-            Box(
-              modifier = Modifier.fillMaxWidth().height(80.dp),
-              contentAlignment = Alignment.Center
-            ) {
-              CircularProgressIndicator()
-            }
-          } else if (rangesList.isEmpty()) {
-            Text(
-              text = "কোনো লাইভ রেঞ্জ পাওয়া যায়নি। লোড করার চেষ্টা করা হচ্ছে...",
-              style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.error
-            )
-          } else {
-            // Display the last 3 ranges
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-              rangesList.forEach { range ->
-                val isSelected = selectedRange == range
-                Card(
-                  colors = CardDefaults.cardColors(
-                    containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant
-                  ),
-                  modifier = Modifier
-                    .weight(1f)
-                    .clickable { selectedRange = range },
-                  shape = RoundedCornerShape(8.dp)
-                ) {
-                  Box(
-                    modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(vertical = 12.dp, horizontal = 4.dp),
-                    contentAlignment = Alignment.Center
-                  ) {
-                    Text(
-                      text = range,
-                      style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
-                      ),
-                      maxLines = 1,
-                      overflow = TextOverflow.Ellipsis
-                    )
-                  }
-                }
-              }
-            }
-          }
+          Text(
+            text = "রেন্জ: $selectedRange",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
 
           // Editable password field
           OutlinedTextField(
@@ -1275,7 +1201,7 @@ fun MainScreen() {
           Button(
             onClick = {
               if (selectedRange.isEmpty()) {
-                currentCreationStatus = "please select range"
+                currentCreationStatus = "please enter range"
                 return@Button
               }
               isCreatingAccount = true
@@ -1429,6 +1355,28 @@ fun MainScreen() {
       confirmButton = {
         TextButton(onClick = { showCreatorDialog = false }) {
           Text("বন্ধ করুন")
+        }
+      }
+    )
+  }
+
+  // Set Range Dialog
+  if (showSetRangeDialog) {
+    AlertDialog(
+      onDismissRequest = { showSetRangeDialog = false },
+      title = { Text("রেঞ্জ সেট করুন") },
+      text = {
+        OutlinedTextField(
+          value = selectedRange,
+          onValueChange = { selectedRange = it },
+          label = { Text("রেঞ্জ লিখুন (যেমন: 22508XXXX)") },
+          modifier = Modifier.fillMaxWidth(),
+          singleLine = true
+        )
+      },
+      confirmButton = {
+        Button(onClick = { showSetRangeDialog = false }) {
+          Text("সেভ করুন")
         }
       }
     )
