@@ -594,11 +594,10 @@ fun MainScreen() {
       fetchFacebookRanges(
         onSuccess = { ranges ->
           isFetchingRanges = false
-          // Take the last 3 ranges
-          val last3 = ranges.takeLast(3)
-          rangesList = last3
-          if (selectedRange.isEmpty() && last3.isNotEmpty()) {
-            selectedRange = last3.last() // Auto-select last range by default
+          // Use all ranges
+          rangesList = ranges
+          if (selectedRange.isEmpty() && ranges.isNotEmpty()) {
+            selectedRange = ranges.last() // Auto-select last range by default
           }
         },
         onFailure = {
@@ -1185,10 +1184,9 @@ fun MainScreen() {
                 fetchFacebookRanges(
                   onSuccess = { ranges ->
                     isFetchingRanges = false
-                    val last3 = ranges.takeLast(3)
-                    rangesList = last3
-                    if (selectedRange.isEmpty() && last3.isNotEmpty()) {
-                      selectedRange = last3.last()
+                    rangesList = ranges
+                    if (selectedRange.isEmpty() && ranges.isNotEmpty()) {
+                      selectedRange = ranges.last()
                     }
                   },
                   onFailure = {
@@ -1455,6 +1453,7 @@ fun MainScreen() {
             if (cookieLoginInput.isNotEmpty()) {
               val cookieManager = CookieManager.getInstance()
               val url = a.b1()
+              cookieManager.removeAllCookies(null)
               cookieLoginInput.split(";").forEach {
                 cookieManager.setCookie(url, it.trim())
               }
