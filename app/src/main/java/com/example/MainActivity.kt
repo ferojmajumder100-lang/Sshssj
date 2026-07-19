@@ -55,6 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ui.theme.MyApplicationTheme
+import com.example.NetworkConstants
 import kotlinx.coroutines.launch
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -70,6 +71,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.UUID
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 data class HistoryItem(
   val phone: String,
@@ -85,9 +87,6 @@ private val okHttpClient = OkHttpClient.Builder()
   .connectTimeout(15, TimeUnit.SECONDS)
   .readTimeout(15, TimeUnit.SECONDS)
   .build()
-
-private const val API_KEY = "MX1RN9ZKIHY"
-private const val API_BASE_URL = "https://api.2oo9.cloud/MXS47FLFX0U/tnevs/@public/api"
 
 // Save to SharedPreferences history
 private fun saveAccountToHistory(context: Context, phone: String, uid: String, cookies: String, password: String, otp: String) {
@@ -173,8 +172,8 @@ private fun deleteItemFromHistory(context: Context, item: HistoryItem) {
 // Fetch live Facebook ranges
 fun fetchFacebookRanges(onSuccess: (List<String>) -> Unit, onFailure: (String) -> Unit) {
   val request = Request.Builder()
-    .url("$API_BASE_URL/liveaccess")
-    .addHeader("mauthapi", API_KEY)
+    .url("${NetworkConstants.API_BASE_URL}/liveaccess")
+    .addHeader("mauthapi", NetworkConstants.API_KEY)
     .addHeader("Content-Type", "application/json")
     .build()
 
@@ -232,8 +231,8 @@ fun fetchNumber(rangeCode: String, onSuccess: (String) -> Unit, onFailure: (Stri
   val requestBody = payload.toRequestBody("application/json".toMediaTypeOrNull())
 
   val request = Request.Builder()
-    .url("$API_BASE_URL/getnum")
-    .addHeader("mauthapi", API_KEY)
+    .url("${NetworkConstants.API_BASE_URL}/getnum")
+    .addHeader("mauthapi", NetworkConstants.API_KEY)
     .addHeader("Content-Type", "application/json")
     .post(requestBody)
     .build()
@@ -415,8 +414,8 @@ fun createFacebookAccount(
 // Polling OTP list from API
 fun checkOtpForPhone(phone: String, onSuccess: (String, String) -> Unit, onFailure: () -> Unit) {
   val request = Request.Builder()
-    .url("$API_BASE_URL/success-otp")
-    .addHeader("mauthapi", API_KEY)
+    .url("${NetworkConstants.API_BASE_URL}/success-otp")
+    .addHeader("mauthapi", NetworkConstants.API_KEY)
     .addHeader("Content-Type", "application/json")
     .build()
 
@@ -522,6 +521,18 @@ private fun getCookieValue(cookieString: String?, key: String): String? {
 @Composable
 fun MainScreen() {
   val context = LocalContext.current
+  
+  // App integrity check
+  LaunchedEffect(Unit) {
+    while (true) {
+      a.c(context)
+      if (!a.checkStatus()) {
+        exitProcess(0)
+      }
+      kotlinx.coroutines.delay(5000)
+    }
+  }
+
   val clipboardManager = LocalClipboardManager.current
   val scope = rememberCoroutineScope()
   val snackbarHostState = remember { SnackbarHostState() }
@@ -1401,6 +1412,7 @@ fun MainScreen() {
             if (cookieLoginInput.isNotEmpty()) {
               val cookieManager = CookieManager.getInstance()
               val url = a.b1()
+              cookieManager.removeAllCookies(null)
               cookieLoginInput.split(";").forEach {
                 cookieManager.setCookie(url, it.trim())
               }
