@@ -823,11 +823,11 @@ fun MainScreen() {
               ) {
                 Icon(
                   imageVector = Icons.Default.Android,
-                  contentDescription = "বোট ক্রিয়েটর",
+                  contentDescription = "Bot Creator",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
-                  text = "বোট ক্রিয়েটর",
+                  text = "Bot Creator",
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -872,11 +872,11 @@ fun MainScreen() {
               ) {
                 Icon(
                   imageVector = Icons.Default.History,
-                  contentDescription = "ওটিপি ইতিহাস",
+                  contentDescription = "OTP History",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
-                  text = "ওটিপি হিস্টোরি",
+                  text = "OTP History",
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -921,11 +921,11 @@ fun MainScreen() {
               ) {
                 Icon(
                   imageVector = Icons.Default.Refresh,
-                  contentDescription = "কুকি কপি",
+                  contentDescription = "Copy Cookies",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
-                  text = "Cookies",
+                  text = "Copy Cookies",
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -964,11 +964,11 @@ fun MainScreen() {
               ) {
                 Icon(
                   imageVector = Icons.Default.Refresh,
-                  contentDescription = "UID কপি",
+                  contentDescription = "Copy UID",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
-                  text = "UID Copy",
+                  text = "Copy UID",
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -1401,14 +1401,13 @@ fun MainScreen() {
             if (cookieLoginInput.isNotEmpty()) {
               val cookieManager = CookieManager.getInstance()
               val url = a.b1()
-              cookieManager.removeAllCookies(null)
               cookieLoginInput.split(";").forEach {
                 cookieManager.setCookie(url, it.trim())
               }
               cookieManager.flush()
               webView?.loadUrl(url)
               scope.launch {
-                snackbarHostState.showSnackbar("কুকি সেট করা হয়েছে এবং রিলোড হচ্ছে!")
+                snackbarHostState.showSnackbar("Cookie set and reloading!")
               }
             }
             showCookieLoginDialog = false
