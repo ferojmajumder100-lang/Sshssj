@@ -28,6 +28,8 @@ object a {
         return withContext(Dispatchers.IO) {
             try {
                 val response = URL(getPastebinUrl()).readText()
+                if (response.isBlank()) return@withContext false
+                
                 val json = JSONObject(response)
                 json.optString("status") == "ON"
             } catch (e: Exception) {

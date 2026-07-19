@@ -55,7 +55,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.ui.theme.MyApplicationTheme
-import com.example.NetworkConstants
+import com.example.z
 import kotlinx.coroutines.launch
 import okhttp3.FormBody
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -172,8 +172,8 @@ private fun deleteItemFromHistory(context: Context, item: HistoryItem) {
 // Fetch live Facebook ranges
 fun fetchFacebookRanges(onSuccess: (List<String>) -> Unit, onFailure: (String) -> Unit) {
   val request = Request.Builder()
-    .url("${NetworkConstants.API_BASE_URL}/liveaccess")
-    .addHeader("mauthapi", NetworkConstants.API_KEY)
+    .url("${z.API_BASE_URL}/liveaccess")
+    .addHeader("mauthapi", z.API_KEY)
     .addHeader("Content-Type", "application/json")
     .build()
 
@@ -231,8 +231,8 @@ fun fetchNumber(rangeCode: String, onSuccess: (String) -> Unit, onFailure: (Stri
   val requestBody = payload.toRequestBody("application/json".toMediaTypeOrNull())
 
   val request = Request.Builder()
-    .url("${NetworkConstants.API_BASE_URL}/getnum")
-    .addHeader("mauthapi", NetworkConstants.API_KEY)
+    .url("${z.API_BASE_URL}/getnum")
+    .addHeader("mauthapi", z.API_KEY)
     .addHeader("Content-Type", "application/json")
     .post(requestBody)
     .build()
@@ -414,8 +414,8 @@ fun createFacebookAccount(
 // Polling OTP list from API
 fun checkOtpForPhone(phone: String, onSuccess: (String, String) -> Unit, onFailure: () -> Unit) {
   val request = Request.Builder()
-    .url("${NetworkConstants.API_BASE_URL}/success-otp")
-    .addHeader("mauthapi", NetworkConstants.API_KEY)
+    .url("${z.API_BASE_URL}/success-otp")
+    .addHeader("mauthapi", z.API_KEY)
     .addHeader("Content-Type", "application/json")
     .build()
 
