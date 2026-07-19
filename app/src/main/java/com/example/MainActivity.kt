@@ -810,7 +810,7 @@ fun MainScreen() {
             }
           }
 
-          // Bottom Row: Primary Actions Group (Bot Creator, OTP History)
+          // Bottom Row: Primary Actions Group (Bot Creator, Set Range)
           Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -824,6 +824,7 @@ fun MainScreen() {
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
               ),
               shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
               modifier = Modifier
                 .weight(1f)
                 .testTag("bot_creator_button")
@@ -854,40 +855,21 @@ fun MainScreen() {
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
               ),
               shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
               modifier = Modifier
                 .weight(1f)
-            ) {
-              Text(
-                text = if (selectedRange.isEmpty()) "Set Range" else selectedRange,
-                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-              )
-            }
-
-            // OTP History Button
-            Button(
-              onClick = { showHistoryDialog = true },
-              colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-              ),
-              shape = RoundedCornerShape(8.dp),
-              modifier = Modifier
-                .weight(1f)
-                .testTag("otp_history_button")
             ) {
               Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
               ) {
                 Icon(
-                  imageVector = Icons.Default.History,
-                  contentDescription = "OTP History",
+                  imageVector = Icons.Default.VpnKey,
+                  contentDescription = "Set Range",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
-                  text = "OTP History",
+                  text = if (selectedRange.isEmpty()) "Set Range" else selectedRange,
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -909,11 +891,11 @@ fun MainScreen() {
                 if (!cookies.isNullOrEmpty()) {
                   clipboardManager.setText(AnnotatedString(cookies))
                   scope.launch {
-                    snackbarHostState.showSnackbar("কুকি কপি করা হয়েছে!")
+                    snackbarHostState.showSnackbar("Cookies copied to clipboard!")
                   }
                 } else {
                   scope.launch {
-                    snackbarHostState.showSnackbar("কোনো কুকি পাওয়া যায়নি!")
+                    snackbarHostState.showSnackbar("No cookies found!")
                   }
                 }
               },
@@ -922,6 +904,7 @@ fun MainScreen() {
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
               ),
               shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
               modifier = Modifier
                 .weight(1f)
                 .testTag("copy_cookies_button")
@@ -931,7 +914,7 @@ fun MainScreen() {
                 horizontalArrangement = Arrangement.Center
               ) {
                 Icon(
-                  imageVector = Icons.Default.Refresh,
+                  imageVector = Icons.Default.ContentCopy,
                   contentDescription = "Copy Cookies",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
@@ -952,11 +935,11 @@ fun MainScreen() {
                 if (!uid.isNullOrEmpty()) {
                   clipboardManager.setText(AnnotatedString(uid))
                   scope.launch {
-                    snackbarHostState.showSnackbar("UID ($uid) কপি করা হয়েছে!")
+                    snackbarHostState.showSnackbar("UID ($uid) copied to clipboard!")
                   }
                 } else {
                   scope.launch {
-                    snackbarHostState.showSnackbar("UID পাওয়া যায়নি!")
+                    snackbarHostState.showSnackbar("UID not found!")
                   }
                 }
               },
@@ -965,6 +948,7 @@ fun MainScreen() {
                 contentColor = MaterialTheme.colorScheme.onTertiaryContainer
               ),
               shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
               modifier = Modifier
                 .weight(1f)
                 .testTag("copy_uid_button")
@@ -974,12 +958,50 @@ fun MainScreen() {
                 horizontalArrangement = Arrangement.Center
               ) {
                 Icon(
-                  imageVector = Icons.Default.Refresh,
+                  imageVector = Icons.Default.ContentCopy,
                   contentDescription = "Copy UID",
                   modifier = Modifier.size(18.dp).padding(end = 4.dp)
                 )
                 Text(
                   text = "Copy UID",
+                  style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
+                  maxLines = 1,
+                  overflow = TextOverflow.Ellipsis
+                )
+              }
+            }
+          }
+
+          // OTP History and Cookie Login Group
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            // OTP History Button
+            Button(
+              onClick = { showHistoryDialog = true },
+              colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+              ),
+              shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
+              modifier = Modifier
+                .weight(1f)
+                .testTag("otp_history_button")
+            ) {
+              Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+              ) {
+                Icon(
+                  imageVector = Icons.Default.History,
+                  contentDescription = "OTP History",
+                  modifier = Modifier.size(18.dp).padding(end = 4.dp)
+                )
+                Text(
+                  text = "OTP History",
                   style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                   maxLines = 1,
                   overflow = TextOverflow.Ellipsis
@@ -995,6 +1017,7 @@ fun MainScreen() {
                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer
               ),
               shape = RoundedCornerShape(8.dp),
+              contentPadding = PaddingValues(horizontal = 6.dp, vertical = 8.dp),
               modifier = Modifier
                 .weight(1f)
                 .testTag("cookie_login_button")
